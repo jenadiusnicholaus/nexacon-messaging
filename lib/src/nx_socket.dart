@@ -386,13 +386,13 @@ class NxSocket {
   }
 
   void _handleAuthFailure(String xml) {
-    _intentionalDisconnect = true;
+    log('❌ Authentication failed');
     _pingTimer?.cancel();
     _setState(NxConnectionState.failed);
     if (_authCompleter != null && !_authCompleter!.isCompleted) {
       _authCompleter!.complete(false);
     }
-    _socket?.close(1001, 'Auth failed');
+    _socket?.close(3000, 'Auth failed');
   }
 
   void _bindResource() {
