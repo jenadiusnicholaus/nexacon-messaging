@@ -1,0 +1,32 @@
+name: nexacon_messaging
+description: Real-time messaging SDK for Nexacon — instant messaging with presence, typing indicators, delivery receipts, and message history.
+version: 1.0.0
+homepage: https://github.com/jenadiusnicholaus/nexacon-messaging
+repository: https://github.com/jenadiusnicholaus/nexacon-messaging
+issue_tracker: https://github.com/jenadiusnicholaus/nexacon-messaging/issues
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  web_socket_client: ^0.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
