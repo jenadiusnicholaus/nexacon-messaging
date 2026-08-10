@@ -33,9 +33,9 @@ final messaging = NexaconMessaging(
   secretKey: 'your-secret-key',
 );
 
-// Connect
+// Connect (domain is auto-appended internally)
 final connected = await messaging.connect(
-  nxid: 'user@nxservice.quantumvision-tech.com',
+  nxid: '+255123456789@nxservice.quantumvision-tech.com',
   password: 'nx-token',
   wsUrl: 'wss://nxservice.quantumvision-tech.com/xmpp-websocket',
 );
@@ -61,14 +61,14 @@ if (connected) {
     print('Message ${receipt.messageId} delivered to ${receipt.from}');
   });
 
-  // Send a message
+  // Send a message (just use phone number - domain auto-appended)
   await messaging.sendMessage(
-    to: 'peer@nxservice.quantumvision-tech.com',
+    to: '+255987654321',
     message: 'Hello!',
   );
 
-  // Send typing indicator
-  messaging.sendTypingIndicator('peer@nxservice.quantumvision-tech.com');
+  // Send typing indicator (just use phone number)
+  messaging.sendTypingIndicator('+255987654321');
 
   // Update your presence
   messaging.setOnline();    // Available
@@ -76,9 +76,9 @@ if (connected) {
   messaging.setBusy();      // Do not disturb
   messaging.setOffline();   // Offline
 
-  // Fetch message history
+  // Fetch message history (just use phone number)
   final history = await messaging.getMessageHistory(
-    peer: 'peer@nxservice.quantumvision-tech.com',
+    peer: '+255987654321',
     page: 1,
     pageSize: 20,
   );
@@ -101,31 +101,31 @@ final connected = await messaging.connectWithToken(
 ## Presence Management
 
 ```dart
-// Subscribe to a user's presence updates
-messaging.subscribeToPresence('peer@nxservice.quantumvision-tech.com');
+// Subscribe to a user's presence updates (just use phone number)
+messaging.subscribeToPresence('+255987654321');
 
 // Check cached presence
-final status = messaging.getPresenceStatus('peer@nxservice.quantumvision-tech.com');
+final status = messaging.getPresenceStatus('+255987654321');
 print('Status: $status'); // NxPresenceStatus.online, .offline, .away, .busy
 
 // Query presence via REST API
-final presence = await messaging.getPresence('peer@nxservice.quantumvision-tech.com');
+final presence = await messaging.getPresence('+255987654321');
 ```
 
 ## Typing Indicators
 
 ```dart
-// User started typing
-messaging.sendTypingIndicator('peer@nxservice.quantumvision-tech.com', isTyping: true);
+// User started typing (just use phone number)
+messaging.sendTypingIndicator('+255987654321', isTyping: true);
 
 // User stopped typing
-messaging.sendTypingIndicator('peer@nxservice.quantumvision-tech.com', isTyping: false);
+messaging.sendTypingIndicator('+255987654321', isTyping: false);
 
 // User is active in the chat
-messaging.sendActiveState('peer@nxservice.quantumvision-tech.com');
+messaging.sendActiveState('+255987654321');
 
 // User left the chat
-messaging.sendInactiveState('peer@nxservice.quantumvision-tech.com');
+messaging.sendInactiveState('+255987654321');
 ```
 
 ## Cleanup

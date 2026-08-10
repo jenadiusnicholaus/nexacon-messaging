@@ -72,9 +72,26 @@ class NexaconMessaging {
   /// Get the API client for REST calls
   NxApiClient get api => _api;
 
+  /// XMPP domain (extracted from JID after connection)
+  String? _domain;
+
   /// Presence cache — check a user's last known status
   NxPresenceStatus? getPresenceStatus(String nxid) {
     return _presenceCache[nxid];
+  }
+
+  /// Normalize recipient address - auto-append domain if not present
+  /// Accepts: "+255788811169" or "+255788811169@nxservice.quantumvision-tech.com"
+  /// Returns: "+255788811169@nxservice.quantumvision-tech.com"
+  String _normalizeRecipient(String recipient) {
+    if (recipient.contains('@')) {
+      return recipient; // Already has domain
+    }
+    if (_domain != null) {
+      return '$recipient@$_domain'; // Append stored domain
+    }
+    // Fallback to default domain if not connected yet
+    return '$recipient@nxservice.quantumvision-tech.com';
   }
 
   NexaconMessaging({
@@ -161,12 +178,19 @@ class NexaconMessaging {
     required String wsUrl,
     String? resource,
   }) async {
-    return _socket.connect(
+    final connected = await _socket.connect(
       jid: nxid,
       password: password,
       wsUrl: wsUrl,
       resource: resource,
     );
+
+    // Extract and store domain from JID
+    if (connected && nxid.contains('@')) {
+      _domain = nxid.split('@')[1];
+    }
+
+    return connected;
   }
 
   /// Connect using an NX token (fetches token from API first)
@@ -210,7 +234,7 @@ class NexaconMessaging {
     final completer = Completer<void>();
     _pendingDeliveries[id] = completer;
 
-    await _socket.sendMessage(to, payload, id: id);
+    await _socket.sendMessage(_normalizeRecipient(to), payload, id: id);
 
     // Set up delivery timeout
     completer.future.timeout(
@@ -226,42 +250,38 @@ class NexaconMessaging {
     required String to,
     required String message,
   }) async {
-    await _socket.sendMessage(to, message);
+    await _socket.sendMessage(_normalizeRecipient(to), message);
   }
 
   /// Send a typing indicator
   void sendTypingIndicator(String to, {bool isTyping = true}) {
-    _socket.sendChatState(to, isTyping ? 'composing' : 'paused');
+    _socket.sendChatState(
+        _normalizeRecipient(to), isTyping ? 'composing' : 'paused');
   }
 
   /// Send "active" chat state (user is active in the chat)
   void sendActiveState(String to) {
-    _socket.sendChatState(to, 'active');
+    _socket.sendChatState(_normalizeRecipient(to), 'active');
   }
 
   /// Send "inactive" chat state (user left the chat)
   void sendInactiveState(String to) {
-    _socket.sendChatState(to, 'inactive');
+    _socket.sendChatState(_normalizeRecipient(to), 'inactive');
   }
 
   /// Send "gone" chat state (user closed the chat)
   void sendGoneState(String to) {
-    _socket.sendChatState(to, 'gone');
+    _socket.sendChatState(_normalizeRecipient(to), 'gone');
   }
 
-  /// Send a read receipt
+  /// Send a read receipt for a message
   void sendReadReceipt(String to, String messageId) {
-    final payload = jsonEncode({
-      'type': 'read_receipt',
-      'message_id': messageId,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    });
-    _socket.sendMessage(to, payload);
+    _socket.sendDeliveryReceipt(_normalizeRecipient(to), messageId);
   }
 
-  /// Send a presence subscription request to a user
-  void subscribeToPresence(String to) {
-    _socket.sendPresenceSubscription(to);
+  /// Subscribe to a user's presence updates
+  void subscribeToPresence(String nxid) {
+    _socket.sendPresenceSubscription(_normalizeRecipient(nxid));
   }
 
   /// Update your own presence
