@@ -176,6 +176,7 @@ class NxMessageHistoryResponse {
           parsedMessages.add(NxHistoryMessage.fromJson(item));
         } catch (e) {
           // Log parse failures to help debugging broken response items
+          // ignore: avoid_print
           print('⚠️ Failed to parse NxHistoryMessage: $e, item: $item');
         }
       }

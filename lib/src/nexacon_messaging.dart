@@ -171,16 +171,22 @@ class NexaconMessaging {
   }
 
   /// Connect to the NX server
+  ///
+  /// [wsUrl] is optional — when omitted, the SDK derives it from the baseUrl
+  /// (e.g., `https://nxservice.quantumvision-tech.com/api/v1.0` →
+  /// `wss://nxservice.quantumvision-tech.com/nx-websocket/`).
   Future<bool> connect({
     required String nxid,
     required String password,
-    required String wsUrl,
+    String? wsUrl,
     String? resource,
   }) async {
+    final url = wsUrl ?? _deriveWsUrl();
+
     final connected = await _socket.connect(
       jid: nxid,
       password: password,
-      wsUrl: wsUrl,
+      wsUrl: url,
       resource: resource,
     );
 
@@ -190,6 +196,15 @@ class NexaconMessaging {
     }
 
     return connected;
+  }
+
+  /// Derive the WebSocket URL from the API baseUrl.
+  /// `https://host/api/v1.0` → `wss://host/nx-websocket/`
+  String _deriveWsUrl() {
+    final base = _api.baseUrl;
+    final uri = Uri.parse(base);
+    final scheme = uri.scheme == 'https' ? 'wss' : 'ws';
+    return '$scheme://${uri.host}/nx-websocket/';
   }
 
   /// Connect using an NX token (fetches token from API first)

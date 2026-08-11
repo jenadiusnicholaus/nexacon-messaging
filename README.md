@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  nexacon_messaging: ^1.0.0
+  nexacon_messaging: ^1.0.2
 ```
 
 ## Quick Start
@@ -35,11 +35,10 @@ final messaging = NexaconMessaging(
   secretKey: 'your-secret-key',
 );
 
-// Connect (domain is auto-appended internally)
+// Connect — wsUrl is optional, derived from baseUrl when omitted
 final connected = await messaging.connect(
   nxid: '+255123456789@your-domain.com',
   password: 'nx-token',
-  wsUrl: 'wss://your-domain.com/xmpp-websocket',
 );
 
 if (connected) {
