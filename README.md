@@ -1,5 +1,7 @@
 # nexacon_messaging
 
+[![Documentation](https://img.shields.io/badge/docs-readthedocs-blue.svg)](https://nexacon-messaging.readthedocs.io/)
+
 Real-time messaging SDK for Nexacon — instant messaging with presence, typing indicators, delivery receipts, and message history.
 
 ## Features
@@ -78,11 +80,12 @@ if (connected) {
 
   // Fetch message history (just use phone number)
   final history = await messaging.getMessageHistory(
-    peer: '+255987654321',
-    page: 1,
+    peer: '255987654321',  // without + prefix
+    offset: 0,
     pageSize: 20,
   );
   print('Loaded ${history.messages.length} messages');
+  print('Has next: ${history.hasNext}, next offset: ${history.nextOffset}');
 }
 ```
 

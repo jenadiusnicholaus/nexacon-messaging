@@ -1,0 +1,73 @@
+site_name: Nexacon Messaging SDK
+site_description: Real-time messaging SDK for Nexacon — instant messaging with presence, typing indicators, delivery receipts, and message history.
+site_author: Jenadius Nicholaus
+site_url: https://nexacon-messaging.readthedocs.io/
+
+repo_name: jenadiusnicholaus/nexacon-messaging
+repo_url: https://github.com/jenadiusnicholaus/nexacon-messaging
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+      - Connection: getting-started/connection.md
+  - Guides:
+      - Messaging: guides/messaging.md
+      - Presence: guides/presence.md
+      - Typing Indicators: guides/typing-indicators.md
+      - Delivery & Read Receipts: guides/receipts.md
+      - Message History: guides/message-history.md
+      - Pagination: guides/pagination.md
+  - API Reference:
+      - NexaconMessaging: api/nexacon-messaging.md
+      - NxSocket: api/nx-socket.md
+      - NxApiClient: api/nx-api-client.md
+      - Models: api/models.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
