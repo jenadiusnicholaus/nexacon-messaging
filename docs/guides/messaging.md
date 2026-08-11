@@ -20,12 +20,12 @@ The `sendMessage` method:
 
 ### Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `to` | `String` | Yes | — | Recipient phone number or full JID |
-| `message` | `String` | Yes | — | Message body (plain text) |
-| `messageId` | `String?` | No | Auto-generated | Custom message ID |
-| `deliveryTimeout` | `Duration` | No | 30s | How long to wait for delivery receipt |
+| Parameter         | Type       | Required | Default        | Description                           |
+| ----------------- | ---------- | -------- | -------------- | ------------------------------------- |
+| `to`              | `String`   | Yes      | —              | Recipient phone number or full JID    |
+| `message`         | `String`   | Yes      | —              | Message body (plain text)             |
+| `messageId`       | `String?`  | No       | Auto-generated | Custom message ID                     |
+| `deliveryTimeout` | `Duration` | No       | 30s            | How long to wait for delivery receipt |
 
 ### Send raw message (no delivery tracking)
 
@@ -51,15 +51,15 @@ messaging.messageStream.listen((msg) {
 
 ### NxMessage Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `String?` | Message ID |
-| `from` | `String?` | Sender JID |
-| `to` | `String?` | Recipient JID |
-| `body` | `String?` | Message body (plain text) |
-| `type` | `String?` | Message type (usually `chat`) |
-| `timestamp` | `int` | Timestamp in milliseconds |
-| `originId` | `String?` | Origin ID for deduplication |
+| Field       | Type      | Description                   |
+| ----------- | --------- | ----------------------------- |
+| `id`        | `String?` | Message ID                    |
+| `from`      | `String?` | Sender JID                    |
+| `to`        | `String?` | Recipient JID                 |
+| `body`      | `String?` | Message body (plain text)     |
+| `type`      | `String?` | Message type (usually `chat`) |
+| `timestamp` | `int`     | Timestamp in milliseconds     |
+| `originId`  | `String?` | Origin ID for deduplication   |
 
 ## Auto Domain Normalization
 
@@ -68,10 +68,10 @@ The SDK automatically appends the XMPP domain to bare phone numbers:
 ```dart
 // These are equivalent:
 await messaging.sendMessage(to: '+255987654321', message: 'Hi');
-await messaging.sendMessage(to: '+255987654321@nxservice.quantumvision-tech.com', message: 'Hi');
+await messaging.sendMessage(to: '+255987654321@your-domain.com', message: 'Hi');
 ```
 
-The domain is extracted from your JID after connection. If not connected, it defaults to `nxservice.quantumvision-tech.com`.
+The domain is extracted from your JID after connection. If not connected, it falls back to a default domain.
 
 ## Message Body Format
 

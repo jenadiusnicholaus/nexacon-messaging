@@ -16,8 +16,8 @@ Real-time messaging SDK for Nexacon — instant messaging with presence, typing 
 ## Platform Support
 
 | Android | iOS | Linux | macOS | Web | Windows |
-|:------:|:---:|:-----:|:-----:|:---:|:-------:|
-|   ✅   | ✅  |   ✅  |   ✅  | ✅  |   ✅    |
+| :-----: | :-: | :---: | :---: | :-: | :-----: |
+|   ✅    | ✅  |  ✅   |  ✅   | ✅  |   ✅    |
 
 ## Quick Example
 
@@ -30,9 +30,9 @@ final messaging = NexaconMessaging(
 );
 
 final connected = await messaging.connect(
-  nxid: '+255123456789@nxservice.quantumvision-tech.com',
+  nxid: '+255123456789@your-domain.com',
   password: 'nx-token',
-  wsUrl: 'wss://nxservice.quantumvision-tech.com/xmpp-websocket',
+  wsUrl: 'wss://your-domain.com/xmpp-websocket',
 );
 
 if (connected) {

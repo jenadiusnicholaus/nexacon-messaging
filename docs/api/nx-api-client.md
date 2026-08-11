@@ -8,26 +8,26 @@ REST API client for Nexacon messaging endpoints.
 NxApiClient({
   required String apiKey,
   required String secretKey,
-  String baseUrl = 'https://nxservice.quantumvision-tech.com/api/v1.0',
+  String baseUrl = 'https://your-domain.com/api/v1.0',
   Duration timeout = const Duration(seconds: 30),
 })
 ```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `apiKey` | `String` | — | API key sent as `X-API-Key` header |
-| `secretKey` | `String` | — | Secret key sent as `X-Secret-Key` header |
-| `baseUrl` | `String` | `https://nxservice.quantumvision-tech.com/api/v1.0` | API base URL |
-| `timeout` | `Duration` | 30s | Request timeout |
+| Parameter   | Type       | Default                            | Description                              |
+| ----------- | ---------- | ---------------------------------- | ---------------------------------------- |
+| `apiKey`    | `String`   | —                                  | API key sent as `X-API-Key` header       |
+| `secretKey` | `String`   | —                                  | Secret key sent as `X-Secret-Key` header |
+| `baseUrl`   | `String`   | `https://your-domain.com/api/v1.0` | API base URL                             |
+| `timeout`   | `Duration` | 30s                                | Request timeout                          |
 
 ## Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `apiKey` | `String` | API key |
-| `secretKey` | `String` | Secret key |
-| `baseUrl` | `String` | Base URL |
-| `timeout` | `Duration` | Request timeout |
+| Property    | Type       | Description     |
+| ----------- | ---------- | --------------- |
+| `apiKey`    | `String`   | API key         |
+| `secretKey` | `String`   | Secret key      |
+| `baseUrl`   | `String`   | Base URL        |
+| `timeout`   | `Duration` | Request timeout |
 
 ## Methods
 
@@ -73,8 +73,8 @@ Fetches an NX token from `/nexacon-auth/nxm-token/`.
 ```json
 {
   "token": "nx-token-string",
-  "jid": "+255123456789@nxservice.quantumvision-tech.com",
-  "nxws": "wss://nxservice.quantumvision-tech.com/xmpp-websocket"
+  "jid": "+255123456789@your-domain.com",
+  "nxws": "wss://your-domain.com/xmpp-websocket"
 }
 ```
 
@@ -103,13 +103,13 @@ Fetches message history from `/nx/history/`.
 
 **Query parameters sent:**
 
-| Parameter | Description |
-|-----------|-------------|
-| `limit` | Page size |
-| `offset` | Pagination offset |
-| `peer` | Phone number (without `+`) |
+| Parameter    | Description                    |
+| ------------ | ------------------------------ |
+| `limit`      | Page size                      |
+| `offset`     | Pagination offset              |
+| `peer`       | Phone number (without `+`)     |
 | `start_date` | Start date filter (YYYY-MM-DD) |
-| `end_date` | End date filter (YYYY-MM-DD) |
+| `end_date`   | End date filter (YYYY-MM-DD)   |
 
 ### `getPresence`
 
@@ -131,12 +131,12 @@ Closes the underlying HTTP client.
 
 All requests include:
 
-| Header | Value |
-|--------|-------|
+| Header         | Value              |
+| -------------- | ------------------ |
 | `Content-Type` | `application/json` |
-| `X-API-Key` | `apiKey` |
-| `X-Secret-Key` | `secretKey` |
-| `X-NX-Token` | NX token (if set) |
+| `X-API-Key`    | `apiKey`           |
+| `X-Secret-Key` | `secretKey`        |
+| `X-NX-Token`   | NX token (if set)  |
 
 ## Error Handling
 

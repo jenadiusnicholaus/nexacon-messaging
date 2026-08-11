@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **API Improvement**: Auto-append domain to recipient addresses
   - Users can now use phone numbers directly (e.g., `+255123456789`)
-  - No need to manually add `@nxservice.quantumvision-tech.com`
+  - No need to manually add the domain suffix
   - Domain is extracted from JID after connection and applied automatically
   - Backward compatible — full JIDs still work
 

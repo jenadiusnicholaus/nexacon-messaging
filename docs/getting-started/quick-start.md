@@ -19,9 +19,9 @@ You can connect with an NX ID and password directly:
 
 ```dart
 final connected = await messaging.connect(
-  nxid: '+255123456789@nxservice.quantumvision-tech.com',
+  nxid: '+255123456789@your-domain.com',
   password: 'nx-token',
-  wsUrl: 'wss://nxservice.quantumvision-tech.com/xmpp-websocket',
+  wsUrl: 'wss://your-domain.com/xmpp-websocket',
 );
 
 if (!connected) {
@@ -79,7 +79,7 @@ await messaging.sendMessage(
 ```
 
 !!! note "Auto domain"
-    You can use bare phone numbers like `+255987654321`. The SDK automatically appends `@nxservice.quantumvision-tech.com` based on your connection domain.
+You can use bare phone numbers like `+255987654321`. The SDK automatically appends your connection domain (e.g., `@your-domain.com`) based on your JID.
 
 ## 5. Update Presence
 

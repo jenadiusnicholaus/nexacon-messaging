@@ -37,9 +37,9 @@ final messaging = NexaconMessaging(
 
 // Connect (domain is auto-appended internally)
 final connected = await messaging.connect(
-  nxid: '+255123456789@nxservice.quantumvision-tech.com',
+  nxid: '+255123456789@your-domain.com',
   password: 'nx-token',
-  wsUrl: 'wss://nxservice.quantumvision-tech.com/xmpp-websocket',
+  wsUrl: 'wss://your-domain.com/xmpp-websocket',
 );
 
 if (connected) {

@@ -9,20 +9,20 @@ final messaging = NexaconMessaging(
 );
 
 final connected = await messaging.connect(
-  nxid: '+255123456789@nxservice.quantumvision-tech.com',
+  nxid: '+255123456789@your-domain.com',
   password: 'nx-token',
-  wsUrl: 'wss://nxservice.quantumvision-tech.com/xmpp-websocket',
+  wsUrl: 'wss://your-domain.com/xmpp-websocket',
 );
 ```
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `nxid` | `String` | Yes | Full JID (e.g., `+255123456789@nxservice.quantumvision-tech.com`) |
-| `password` | `String` | Yes | NX authentication token |
-| `wsUrl` | `String` | Yes | WebSocket endpoint URL |
-| `resource` | `String?` | No | XMPP resource (auto-generated if omitted) |
+| Parameter  | Type      | Required | Description                                      |
+| ---------- | --------- | -------- | ------------------------------------------------ |
+| `nxid`     | `String`  | Yes      | Full JID (e.g., `+255123456789@your-domain.com`) |
+| `password` | `String`  | Yes      | NX authentication token                          |
+| `wsUrl`    | `String`  | Yes      | WebSocket endpoint URL                           |
+| `resource` | `String?` | No       | XMPP resource (auto-generated if omitted)        |
 
 ## Connecting with Token
 
@@ -61,14 +61,14 @@ messaging.connectionStateStream.listen((state) {
 
 ### NxConnectionState Values
 
-| State | Description |
-|-------|-------------|
-| `disconnected` | Not connected to the server |
-| `connecting` | WebSocket connection in progress |
-| `connected` | WebSocket connected, before authentication |
-| `authenticating` | SASL PLAIN authentication in progress |
-| `authenticated` | Fully authenticated and ready to send/receive |
-| `failed` | Connection or authentication failed |
+| State            | Description                                   |
+| ---------------- | --------------------------------------------- |
+| `disconnected`   | Not connected to the server                   |
+| `connecting`     | WebSocket connection in progress              |
+| `connected`      | WebSocket connected, before authentication    |
+| `authenticating` | SASL PLAIN authentication in progress         |
+| `authenticated`  | Fully authenticated and ready to send/receive |
+| `failed`         | Connection or authentication failed           |
 
 ## Auto-Reconnect
 
@@ -100,7 +100,7 @@ messaging.dispose();
 ```
 
 !!! warning
-    Always call `dispose()` after `disconnect()` to close stream controllers and release resources.
+Always call `dispose()` after `disconnect()` to close stream controllers and release resources.
 
 ## Checking Connection Status
 
