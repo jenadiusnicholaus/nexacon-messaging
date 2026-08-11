@@ -56,9 +56,8 @@ class NxApiClient {
     try {
       switch (method.toUpperCase()) {
         case 'GET':
-          response = await _httpClient
-              .get(url, headers: headers)
-              .timeout(timeout);
+          response =
+              await _httpClient.get(url, headers: headers).timeout(timeout);
           break;
         case 'POST':
           response = await _httpClient
@@ -122,10 +121,14 @@ class NxApiClient {
     String? peer,
     int page = 1,
     int pageSize = 20,
+    int offset = 0,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final params = <String, dynamic>{'page': page, 'limit': pageSize};
+    final params = <String, dynamic>{
+      'limit': pageSize,
+      'offset': offset,
+    };
 
     if (peer != null && peer.isNotEmpty) {
       params['peer'] = peer;

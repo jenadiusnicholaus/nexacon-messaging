@@ -146,6 +146,7 @@ class NxMessageHistoryResponse {
   final int total;
   final int limit;
   final int offset;
+  final int? nextOffset;
   final bool hasNext;
   final bool hasPrev;
   final List<NxHistoryMessage> messages;
@@ -155,27 +156,33 @@ class NxMessageHistoryResponse {
     required this.total,
     required this.limit,
     required this.offset,
+    this.nextOffset,
     required this.hasNext,
     required this.hasPrev,
     required this.messages,
   });
 
   factory NxMessageHistoryResponse.fromJson(Map<String, dynamic> json) {
-    final messagesList = json['messages'];
+    final List<dynamic> messagesList = _asList(json['messages']) ??
+        _asList(json['data']) ??
+        _asList(json['results']) ??
+        _asList(json['items']) ??
+        <dynamic>[];
     List<NxHistoryMessage> parsedMessages = [];
 
-    if (messagesList is List) {
-      for (var item in messagesList) {
-        if (item is Map<String, dynamic>) {
-          try {
-            parsedMessages.add(NxHistoryMessage.fromJson(item));
-          } catch (_) {}
+    for (final item in messagesList) {
+      if (item is Map<String, dynamic>) {
+        try {
+          parsedMessages.add(NxHistoryMessage.fromJson(item));
+        } catch (e) {
+          // Log parse failures to help debugging broken response items
+          print('⚠️ Failed to parse NxHistoryMessage: $e, item: $item');
         }
       }
     }
 
     return NxMessageHistoryResponse(
-      status: json['status']?.toString() ?? 'unknown',
+      status: json['status']?.toString() ?? 'ok',
       total: json['total'] is int
           ? json['total'] as int
           : int.tryParse(json['total']?.toString() ?? '0') ?? 0,
@@ -185,10 +192,28 @@ class NxMessageHistoryResponse {
       offset: json['offset'] is int
           ? json['offset'] as int
           : int.tryParse(json['offset']?.toString() ?? '0') ?? 0,
-      hasNext: json['has_next'] is bool ? json['has_next'] as bool : false,
-      hasPrev: json['has_prev'] is bool ? json['has_prev'] as bool : false,
+      nextOffset: json['next_offset'] is int
+          ? json['next_offset'] as int
+          : int.tryParse(json['next_offset']?.toString() ?? ''),
+      hasNext: json['has_next'] is bool
+          ? json['has_next'] as bool
+          : json['hasNext'] is bool
+              ? json['hasNext'] as bool
+              : parsedMessages.length >=
+                  (json['limit'] is int
+                      ? json['limit'] as int
+                      : int.tryParse(json['limit']?.toString() ?? '20') ?? 20),
+      hasPrev: json['has_prev'] is bool
+          ? json['has_prev'] as bool
+          : json['hasPrev'] is bool
+              ? json['hasPrev'] as bool
+              : false,
       messages: parsedMessages,
     );
+  }
+
+  static List<dynamic>? _asList(dynamic value) {
+    return value is List<dynamic> ? value : null;
   }
 }
 
@@ -201,6 +226,8 @@ class NxHistoryMessage {
   final int timestamp;
   final String type;
   final String? originId;
+  final bool isMe;
+  final bool read;
 
   NxHistoryMessage({
     required this.id,
@@ -210,20 +237,52 @@ class NxHistoryMessage {
     required this.timestamp,
     required this.type,
     this.originId,
+    this.isMe = false,
+    this.read = false,
   });
 
   factory NxHistoryMessage.fromJson(Map<String, dynamic> json) {
     return NxHistoryMessage(
       id: json['id']?.toString() ?? '',
-      from: json['from']?.toString() ?? '',
-      to: json['to']?.toString() ?? '',
-      body: json['body']?.toString() ?? '',
-      timestamp: json['timestamp'] is int
-          ? json['timestamp'] as int
-          : int.tryParse(json['timestamp']?.toString() ?? '0') ?? 0,
+      from: json['from']?.toString() ??
+          json['from_jid']?.toString() ??
+          json['fromNxid']?.toString() ??
+          json['sender']?.toString() ??
+          '',
+      to: json['to']?.toString() ??
+          json['to_jid']?.toString() ??
+          json['toNxid']?.toString() ??
+          '',
+      body: json['body']?.toString() ??
+          json['message']?.toString() ??
+          json['content']?.toString() ??
+          json['text']?.toString() ??
+          '',
+      timestamp: _parseTimestamp(json['timestamp']),
       type: json['type']?.toString() ?? 'chat',
-      originId: json['origin_id']?.toString(),
+      originId: json['origin_id']?.toString() ?? json['originId']?.toString(),
+      isMe: json['is_me'] is bool ? json['is_me'] as bool : false,
+      read: json['read'] is bool ? json['read'] as bool : false,
     );
+  }
+
+  /// Parse timestamp that may be in seconds, milliseconds, or microseconds.
+  /// Returns value in milliseconds.
+  static int _parseTimestamp(dynamic value) {
+    if (value == null) return 0;
+    int raw;
+    if (value is int) {
+      raw = value;
+    } else {
+      raw = int.tryParse(value.toString()) ?? 0;
+    }
+    // Microseconds (16+ digits) → milliseconds
+    if (raw > 1000000000000000) return raw ~/ 1000;
+    // Already milliseconds (13 digits)
+    if (raw > 1000000000000) return raw;
+    // Seconds (10 digits) → milliseconds
+    if (raw > 1000000000) return raw * 1000;
+    return raw;
   }
 
   Map<String, dynamic> toJson() {
@@ -235,6 +294,8 @@ class NxHistoryMessage {
       'timestamp': timestamp,
       'type': type,
       'origin_id': originId,
+      'is_me': isMe,
+      'read': read,
     };
   }
 }

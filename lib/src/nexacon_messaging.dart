@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'models.dart';
 import 'nx_socket.dart';
@@ -225,16 +224,10 @@ class NexaconMessaging {
   }) async {
     final id = messageId ?? 'msg_${DateTime.now().millisecondsSinceEpoch}';
 
-    final payload = jsonEncode({
-      'type': 'chat',
-      'message': message,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    });
-
     final completer = Completer<void>();
     _pendingDeliveries[id] = completer;
 
-    await _socket.sendMessage(_normalizeRecipient(to), payload, id: id);
+    await _socket.sendMessage(_normalizeRecipient(to), message, id: id);
 
     // Set up delivery timeout
     completer.future.timeout(
@@ -314,6 +307,7 @@ class NexaconMessaging {
     String? peer,
     int page = 1,
     int pageSize = 20,
+    int offset = 0,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
@@ -321,6 +315,7 @@ class NexaconMessaging {
       peer: peer,
       page: page,
       pageSize: pageSize,
+      offset: offset,
       startDate: startDate,
       endDate: endDate,
     );
