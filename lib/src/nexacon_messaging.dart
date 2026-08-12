@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'models.dart';
+import 'nexacon_config.dart';
 import 'nx_socket.dart';
 import 'nx_api_client.dart';
 
@@ -76,7 +77,9 @@ class NexaconMessaging {
 
   /// Presence cache — check a user's last known status
   NxPresenceStatus? getPresenceStatus(String nxid) {
-    return _presenceCache[nxid];
+    final normalized = nxid.split('/').first;
+    return _presenceCache[normalized] ??
+        _presenceCache[_normalizeRecipient(nxid)];
   }
 
   /// Normalize recipient address - auto-append domain if not present
@@ -90,13 +93,13 @@ class NexaconMessaging {
       return '$recipient@$_domain'; // Append stored domain
     }
     // Fallback to default domain if not connected yet
-    return '$recipient@nxservice.quantumvision-tech.com';
+    return '$recipient@${NexaconConfig.nxDomain}';
   }
 
   NexaconMessaging({
     String apiKey = '',
     String secretKey = '',
-    String baseUrl = 'https://nxservice.quantumvision-tech.com/api/v1.0',
+    String baseUrl = NexaconConfig.baseUrl,
   }) {
     _socket = NxSocket();
     _api = NxApiClient(apiKey: apiKey, secretKey: secretKey, baseUrl: baseUrl);

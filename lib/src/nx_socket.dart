@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math' hide log;
+import 'dart:developer';
 import 'package:web_socket_client/web_socket_client.dart' as ws_client;
 
+import 'nexacon_config.dart';
 import 'models.dart';
 
 /// Low-level NX WebSocket client
@@ -55,9 +56,7 @@ class NxSocket {
     _password = password;
     _wsUrl = wsUrl;
     _resource = resource ?? '';
-    _domain = jid.contains('@')
-        ? jid.split('@')[1]
-        : 'nxservice.quantumvision-tech.com';
+    _domain = jid.contains('@') ? jid.split('@')[1] : NexaconConfig.nxDomain;
     _intentionalDisconnect = false;
 
     _setState(NxConnectionState.connecting);
@@ -565,7 +564,7 @@ class NxSocket {
 
   void _startPing() {
     _pingTimer?.cancel();
-    _pingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+    _pingTimer = Timer.periodic(NexaconConfig.pingInterval, (timer) {
       if (isAuthenticated) {
         _send(
           '<iq type="get" id="ping_${DateTime.now().millisecondsSinceEpoch}">'

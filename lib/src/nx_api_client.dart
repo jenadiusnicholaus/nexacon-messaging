@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'models.dart';
+import 'nexacon_config.dart';
 
 /// API client for Nexacon messaging REST endpoints
 class NxApiClient {
@@ -17,8 +18,8 @@ class NxApiClient {
   NxApiClient({
     required this.apiKey,
     required this.secretKey,
-    this.baseUrl = 'https://nxservice.quantumvision-tech.com/api/v1.0',
-    this.timeout = const Duration(seconds: 30),
+    this.baseUrl = NexaconConfig.baseUrl,
+    this.timeout = NexaconConfig.defaultTimeout,
   }) {
     _httpClient = http.Client();
   }
@@ -98,8 +99,8 @@ class NxApiClient {
   Future<Map<String, dynamic>> getNxToken(String username) async {
     final res = await request(
       'POST',
-      '/nexacon-auth/nxm-token/',
-      data: {'username': username, 'host': 'nxservice.quantumvision-tech.com'},
+      NexaconConfig.nxTokenEndpoint,
+      data: {'username': username, 'host': NexaconConfig.host},
     );
     _nxToken = res['token'] as String?;
     return res;
@@ -109,7 +110,7 @@ class NxApiClient {
   Future<Map<String, dynamic>> refreshNxToken(String refreshToken) async {
     final res = await request(
       'POST',
-      '/nexacon-auth/nxm-token/refresh/',
+      NexaconConfig.nxTokenRefreshEndpoint,
       data: {'refresh_token': refreshToken},
     );
     _nxToken = res['token'] as String?;
@@ -144,7 +145,8 @@ class NxApiClient {
           '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}';
     }
 
-    final response = await request('GET', '/nx/history/', params: params);
+    final response =
+        await request('GET', NexaconConfig.historyEndpoint, params: params);
     return NxMessageHistoryResponse.fromJson(response);
   }
 
@@ -152,7 +154,7 @@ class NxApiClient {
   Future<Map<String, dynamic>> getPresence([String? user]) async {
     final params = <String, dynamic>{};
     if (user != null) params['user'] = user;
-    return request('GET', '/nx/presence/', params: params);
+    return request('GET', NexaconConfig.presenceEndpoint, params: params);
   }
 
   void close() {
