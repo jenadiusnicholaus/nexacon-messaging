@@ -1,6 +1,6 @@
 name: nexacon_messaging
 description: Real-time messaging SDK for Nexacon — instant messaging with presence, typing indicators, delivery receipts, and message history.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/jenadiusnicholaus/nexacon-messaging
 repository: https://github.com/jenadiusnicholaus/nexacon-messaging
 issue_tracker: https://github.com/jenadiusnicholaus/nexacon-messaging/issues
