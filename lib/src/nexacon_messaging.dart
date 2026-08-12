@@ -289,7 +289,16 @@ class NexaconMessaging {
 
   /// Subscribe to a user's presence updates
   void subscribeToPresence(String nxid) {
-    _socket.sendPresenceSubscription(_normalizeRecipient(nxid));
+    final recipient = _normalizeRecipient(nxid);
+    _socket.sendPresenceSubscription(recipient);
+    // Also send directed presence so the contact sees us online
+    // immediately, even before the subscription is approved.
+    _socket.sendDirectedPresence(recipient);
+  }
+
+  /// Send directed presence to a specific user
+  void sendDirectedPresence(String nxid) {
+    _socket.sendDirectedPresence(_normalizeRecipient(nxid));
   }
 
   /// Update your own presence

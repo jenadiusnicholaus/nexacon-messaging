@@ -199,6 +199,25 @@ class NxSocket {
     _send('<presence type="subscribe" to="${_escapeXml(to)}"/>');
   }
 
+  /// Send a directed presence to a specific user (works even without
+  /// a subscription — the server will deliver it to that user).
+  Future<void> sendDirectedPresence(String to, {String? show}) async {
+    if (!isAuthenticated) return;
+    String stanza = '<presence to="${_escapeXml(to)}"';
+    if (show != null) {
+      stanza += '><show>$show</show></presence>';
+    } else {
+      stanza += '/>';
+    }
+    _send(stanza);
+  }
+
+  /// Approve a presence subscription request from another user.
+  Future<void> sendPresenceSubscribed(String to) async {
+    if (!isAuthenticated) return;
+    _send('<presence type="subscribed" to="${_escapeXml(to)}"/>');
+  }
+
   /// Send a typing indicator (XEP-0085 chat state notifications)
   Future<void> sendChatState(String to, String state) async {
     if (!isAuthenticated) return;
@@ -517,9 +536,25 @@ class NxSocket {
     final typeMatch = RegExp(r'''type=['"]([^'"']*)['"]''').firstMatch(xml);
     final showMatch = RegExp(r'<show>([^<]*)</show>').firstMatch(xml);
 
+    final type = typeMatch?.group(1);
+    final from = fromMatch?.group(1);
+
+    // Auto-approve incoming presence subscription requests so that
+    // presence flows bidirectionally without manual approval.
+    if (type == 'subscribe' && from != null) {
+      log('NxSocket: Auto-approving presence subscription from $from');
+      sendPresenceSubscribed(from);
+      // Also send a subscription request back so we receive their
+      // presence too (mutual subscription).
+      sendPresenceSubscription(from);
+      // Send our current presence directly to them so they see us
+      // online immediately.
+      sendDirectedPresence(from);
+    }
+
     final presence = NxPresence.fromXmpp(
-      fromMatch?.group(1),
-      typeMatch?.group(1),
+      from,
+      type,
       showMatch?.group(1),
     );
 
