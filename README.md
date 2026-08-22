@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  nexacon_messaging: ^1.0.4
+  nexacon_messaging: ^1.0.5
 ```
 
 ## Quick Start
